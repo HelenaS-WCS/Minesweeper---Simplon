@@ -170,7 +170,7 @@ while True:
         titre_go = police_titre.render("WINNER WINNER",True, JAUNE)
         titre_go_rect = titre_go.get_rect(center = (400//2,450//2-80))
         screen.blit(titre_go,titre_go_rect)
-        titre_go = police_titre.render("CKICKEN DINNER!",True, JAUNE)
+        titre_go = police_titre.render("CHICKEN DINNER!",True, JAUNE)
         titre_go_rect = titre_go.get_rect(center = (400//2,450//2-40))
         screen.blit(titre_go,titre_go_rect)
 
