@@ -52,6 +52,12 @@ ROUGE_FOND = (100,10,10)
 ROUGE_BOUTON = (50, 5, 5)
 ROUGE_HOVER = (150, 15, 15)
 
+# Partie gagné
+JAUNE = (250,200,80)
+JAUNE_FOND = (145,100,10)
+VERT_BOUTON = (125, 120, 10)
+VERT_HOVER = (200,200, 15)
+
 # 1ere couche
 arriere_plan = (130,220,240)
 tuile_c1 = (110,150,160)
@@ -67,9 +73,23 @@ sous_tuile_c2 = (210,240,230)
 bouton_rect = pygame.rect.Rect(400 // 2 - 125, 450 // 2 + 50, 250, 60)
 
 # État initial du jeu
-etat_jeu = "MENU"
+etat_jeu = "WINNER"
 
 # FONCTIONS
+# Bouton
+# couleur survol bouton
+def bouton(couleur,couleur_hover,texte):
+    souris_pos = pygame.mouse.get_pos()
+    if bouton_rect.collidepoint(souris_pos)==True:
+        couleur_bouton = couleur_hover
+    else:
+        couleur_bouton = couleur
+
+    # création du bouton
+    pygame.draw.rect(screen,couleur_bouton,bouton_rect,border_radius=10)
+    texte_bouton_3 = police_texte.render(texte,True,BLANC)
+    texte_rect_3 = texte_bouton_3.get_rect(center=bouton_rect.center)
+    screen.blit(texte_bouton_3,texte_rect_3)
 
 # Rejouer
 #def rejouer():
@@ -83,7 +103,7 @@ while True:
             pygame.quit()
             sys.exit() 
             
-        if etat_jeu == ("MENU" or etat_jeu == "GAME OVER") and event.type == pygame.MOUSEBUTTONDOWN:
+        if (etat_jeu == "MENU" or etat_jeu == "GAME OVER" or etat_jeu == "WINNER") and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if bouton_rect.collidepoint(event.pos):
                     etat_jeu = "JEU"       
@@ -97,20 +117,10 @@ while True:
         titre_principal = police_titre.render("MINESWEEPER",True, NOIR)
         titre_rect = titre_principal.get_rect(center = (400//2,450//2-80))
         screen.blit(titre_principal,titre_rect)
-    
-        # couleur survol bouton
-        souris_pos = pygame.mouse.get_pos()
-        if bouton_rect.collidepoint(souris_pos)==True:
-            couleur_bouton = BLEU_HOVER
-        else:
-            couleur_bouton = BLEU_BOUTON
+
+        # bouton
+        bouton(BLEU_BOUTON,BLEU_HOVER,"Démarrer")
         
-        # création du bouton
-        pygame.draw.rect(screen,couleur_bouton,bouton_rect,border_radius=10)
-        texte_bouton_1 = police_texte.render("Démarrer",True,BLANC)
-        texte_rect = texte_bouton_1.get_rect(center=bouton_rect.center)
-        screen.blit(texte_bouton_1,texte_rect)
-            
     # JEU
     if etat_jeu == "JEU":
         # couche inférieure
@@ -146,19 +156,26 @@ while True:
         titre_go = police_titre.render("GAME OVER!",True, ROUGE)
         titre_go_rect = titre_go.get_rect(center = (400//2,450//2-80))
         screen.blit(titre_go,titre_go_rect)
-    
-        # couleur survol bouton
-        souris_pos = pygame.mouse.get_pos()
-        if bouton_rect.collidepoint(souris_pos)==True:
-            couleur_bouton = ROUGE_HOVER
-        else:
-            couleur_bouton = ROUGE_BOUTON
+
+        # bouton
+        bouton(ROUGE_BOUTON,ROUGE_HOVER,"Rejouer")
+
         
-        # création du bouton
-        pygame.draw.rect(screen,couleur_bouton,bouton_rect,border_radius=10)
-        texte_bouton_2 = police_texte.render("Rejouer",True,BLANC)
-        texte_rect_2 = texte_bouton_2.get_rect(center=bouton_rect.center)
-        screen.blit(texte_bouton_2,texte_rect_2)        
+    # WINNER
+    if etat_jeu == "WINNER":
+        
+        # Arrière plan
+        screen.fill(JAUNE_FOND)
+        # Titre
+        titre_go = police_titre.render("WINNER WINNER",True, JAUNE)
+        titre_go_rect = titre_go.get_rect(center = (400//2,450//2-80))
+        screen.blit(titre_go,titre_go_rect)
+        titre_go = police_titre.render("CKICKEN DINNER!",True, JAUNE)
+        titre_go_rect = titre_go.get_rect(center = (400//2,450//2-40))
+        screen.blit(titre_go,titre_go_rect)
+
+        # bouton
+        bouton(VERT_BOUTON,VERT_HOVER,"Rejouer")
     
     pygame.display.update()
     clock.tick(compteur_fps)
