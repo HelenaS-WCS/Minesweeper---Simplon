@@ -32,6 +32,11 @@ tuile_nbe = 10
 # Cases cachées au début
 cases_visibles = [[False for col in range(10)] for row in range(10)]
 
+# nombre de balises restantes                                #HELENA
+nombre_flag = 10
+# matrice drapeau
+drapeaux = [[False for col in range(10)] for row in range(10)]
+
 # COULEURS
 # Fenêtre de départ
 BLANC = (255, 255, 255)
@@ -124,9 +129,18 @@ def bouton(couleur,couleur_hover,texte):
     screen.blit(texte_bouton_3,texte_rect_3)
 
 # Rejouer
-#def rejouer():
+def rejouer():
     # il faut rendre global les variables pour pouvoir les reset
-    # global variables
+    global grille, cases_visibles, etat_jeu
+
+    # Créer une nouvelle grille avec de nouvelles mines
+    grille = generer_grille()
+
+    # Cacher toutes les cases
+    cases_visibles = [[False for col in range(10)] for row in range(10)]
+
+    # Revenir à l'écran de jeu
+    etat_jeu = "JEU"
     
 
 while True:
@@ -138,10 +152,14 @@ while True:
         if (etat_jeu == "MENU" or etat_jeu == "GAME OVER" or etat_jeu == "WINNER") and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if bouton_rect.collidepoint(event.pos):
-                    etat_jeu = "JEU"
+                    if etat_jeu == "MENU":
+                        etat_jeu = "JEU"
+                    else:
+                        rejouer()
+
                     temps_depart = pygame.time.get_ticks()       
 
-        if etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:
+        elif etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:     # modif if en elif
             if event.button == 1:
                 x, y = event.pos
 
@@ -149,6 +167,22 @@ while True:
                     colonne = x // tuile_taille
                     ligne = (y - 50) // tuile_taille
                     ouvre_case(ligne, colonne)
+                    
+            if event.button == 3:                        #HELENA
+                x,y = event.pos
+                if 0 <= x < 400 and 50 <= y < 450:
+                    colonne = x // tuile_taille
+                    ligne = (y - 50) // tuile_taille
+                    if cases_visibles[ligne][colonne] == False:
+                        if drapeaux[ligne][colonne]==False and nombre_flag > 0:
+                            drapeaux[ligne][colonne] = True
+                            nombre_flag -= 1
+                        elif drapeaux[ligne][colonne]==True:
+                            drapeaux[ligne][colonne] = False
+                            nombre_flag += 1 
+                    elif cases_visibles[ligne][colonne] == True and drapeaux[ligne][colonne]==True:
+                        drapeaux[ligne][colonne] = False
+                        nombre_flag += 1 
                     
     # arrière plan
     screen.fill(arriere_plan)
@@ -167,7 +201,6 @@ while True:
     if etat_jeu == "JEU":
         
         temps_actuel = pygame.time.get_ticks()
-        nombre_flag = 10
         
         # image flag et mine
         screen.blit(flag,(5,5))
@@ -192,15 +225,34 @@ while True:
         # couche supérieure
         for row in range(tuile_nbe):
                 for col in range(tuile_nbe):
+                    x = col * tuile_taille
+                    y = row * tuile_taille + 50
+
                     if not cases_visibles[row][col]:
                         if (row + col)%2 == 0:
                             color = tuile_c1
                         else:
                             color = tuile_c2
-                        x = col * tuile_taille
-                        y = row * tuile_taille + 50
                         pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
                         pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
+
+                    elif grille[row][col] > 0:
+                        texte_case = police_texte.render(str(grille[row][col]), True, NOIR)
+                        texte_rect = texte_case.get_rect(
+                            center=(x + tuile_taille // 2, y + tuile_taille // 2)
+                            )
+                        screen.blit(texte_case, texte_rect)
+                        
+                    elif grille[row][col] == -1:
+                        screen.blit(explosion, (x,y))
+                        
+        # couche de drapeaux                                #HELENA
+        for row in range(10):
+            for col in range(10):
+                if drapeaux[row][col] == True:
+                    x = col * tuile_taille
+                    y = row * tuile_taille
+                    screen.blit(flag,(x,y+50))
 
     # GAME OVER
     if etat_jeu == "GAME OVER":
