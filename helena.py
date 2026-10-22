@@ -46,6 +46,12 @@ GRIS_FONCE = (180, 180, 180)
 BLEU_BOUTON = (52, 152, 219)
 BLEU_HOVER = (41, 128, 185)
 
+# Game over
+ROUGE = (220,10,10)
+ROUGE_FOND = (100,10,10)
+ROUGE_BOUTON = (50, 5, 5)
+ROUGE_HOVER = (150, 15, 15)
+
 # 1ere couche
 arriere_plan = (130,220,240)
 tuile_c1 = (110,150,160)
@@ -77,7 +83,7 @@ while True:
             pygame.quit()
             sys.exit() 
             
-        if etat_jeu == "MENU" and event.type == pygame.MOUSEBUTTONDOWN:
+        if etat_jeu == ("MENU" or etat_jeu == "GAME OVER") and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if bouton_rect.collidepoint(event.pos):
                     etat_jeu = "JEU"       
@@ -85,6 +91,7 @@ while True:
     # arrière plan
     screen.fill(arriere_plan)
     
+    # MENU
     if etat_jeu == "MENU":
         # Titre
         titre_principal = police_titre.render("MINESWEEPER",True, NOIR)
@@ -104,7 +111,7 @@ while True:
         texte_rect = texte_bouton_1.get_rect(center=bouton_rect.center)
         screen.blit(texte_bouton_1,texte_rect)
             
-    
+    # JEU
     if etat_jeu == "JEU":
         # couche inférieure
         for row in range(tuile_nbe):
@@ -129,6 +136,29 @@ while True:
                     y = row * tuile_taille + 50
                     pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
                     pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
+    
+    # GAME OVER
+    if etat_jeu == "GAME OVER":
+        
+        # Arrière plan
+        screen.fill(ROUGE_FOND)
+        # Titre
+        titre_go = police_titre.render("GAME OVER!",True, ROUGE)
+        titre_go_rect = titre_go.get_rect(center = (400//2,450//2-80))
+        screen.blit(titre_go,titre_go_rect)
+    
+        # couleur survol bouton
+        souris_pos = pygame.mouse.get_pos()
+        if bouton_rect.collidepoint(souris_pos)==True:
+            couleur_bouton = ROUGE_HOVER
+        else:
+            couleur_bouton = ROUGE_BOUTON
+        
+        # création du bouton
+        pygame.draw.rect(screen,couleur_bouton,bouton_rect,border_radius=10)
+        texte_bouton_2 = police_texte.render("Rejouer",True,BLANC)
+        texte_rect_2 = texte_bouton_2.get_rect(center=bouton_rect.center)
+        screen.blit(texte_bouton_2,texte_rect_2)        
     
     pygame.display.update()
     clock.tick(compteur_fps)
