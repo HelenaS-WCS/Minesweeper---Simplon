@@ -141,6 +141,15 @@ while True:
                     etat_jeu = "JEU"
                     temps_depart = pygame.time.get_ticks()       
 
+        if etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:
+            if event.button == 1:
+                x, y = event.pos
+
+                if 0 <= x < 400 and 50 <= y < 450:
+                    colonne = x // tuile_taille
+                    ligne = (y - 50) // tuile_taille
+                    ouvre_case(ligne, colonne)
+                    
     # arrière plan
     screen.fill(arriere_plan)
     
@@ -192,16 +201,7 @@ while True:
                         y = row * tuile_taille + 50
                         pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
                         pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
-                    
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:
-                x, y = event.pos
 
-                if 0 <= x < 400 and 50 <= y < 450:
-                    colonne = x // tuile_taille
-                    ligne = (y - 50) // tuile_taille
-                    ouvre_case(ligne, colonne)
-                    
     # GAME OVER
     if etat_jeu == "GAME OVER":
         
