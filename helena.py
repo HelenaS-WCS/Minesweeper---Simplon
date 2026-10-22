@@ -2,20 +2,12 @@ import pygame
 import sys
 import random
 import os
+from Vinuisaa_matrices import generer_grille
 
 pygame.init()
-# matrice test
-matrix = [[0,0,0,0,"X",0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,"X",0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,"X",0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0],
-          [0,0,0,0,0,0,0,0,0,0]]
 
+# matrice test
+grille = generer_grille()
 
 # fenêtre de jeu
 screen = pygame.display.set_mode((400,450))
@@ -27,7 +19,7 @@ pygame.display.set_caption("Minesweeper (mais en mieux ;) )")
 # Fenêtre de départ
 police_titre = pygame.font.SysFont("Arial", 42, bold=True)
 police_texte = pygame.font.SysFont("Arial", 30)
-
+police_compteur = pygame.font.SysFont("Arial", 30, bold=True)
 
 #FPS
 clock = pygame.time.Clock()
@@ -36,6 +28,14 @@ compteur_fps = 10
 # tuiles
 tuile_taille = 40
 tuile_nbe = 10
+
+# Cases cachées au début
+cases_visibles = [[False for col in range(10)] for row in range(10)]
+
+# nombre de balises restantes
+nombre_flag = 10
+# matrice drapeau
+drapeaux = [[False for col in range(10)] for row in range(10)]
 
 # COULEURS
 # Fenêtre de départ
@@ -73,9 +73,47 @@ sous_tuile_c2 = (210,240,230)
 bouton_rect = pygame.rect.Rect(400 // 2 - 125, 450 // 2 + 50, 250, 60)
 
 # État initial du jeu
-etat_jeu = "WINNER"
+etat_jeu = "MENU"
+
+# Images
+flag = pygame.image.load('images/flag.png')
+flag = pygame.transform.scale(flag, (40, 40))
+explosion = pygame.image.load('images/explosion.png')
+explosion = pygame.transform.scale(explosion, (40, 40))
+mine = pygame.image.load('images/mine.png')
+mine = pygame.transform.scale(mine, (40, 40))
 
 # FONCTIONS
+
+# Montrer une case
+def ouvre_case(ligne, colonne, clic_direct=True):
+    global etat_jeu
+
+    # Vérifier que la case est dans la grille
+    if ligne < 0 or ligne >= 10 or colonne < 0 or colonne >= 10:
+        return
+
+    # Si c'est une mine
+    if grille[ligne][colonne] == -1:
+        if clic_direct:
+            cases_visibles[ligne][colonne] = True
+            etat_jeu = "GAME OVER"
+        return
+    
+    # Si la case est déjà visible, arrêter
+    if cases_visibles[ligne][colonne]:
+        return
+
+    # Montrez la case
+    cases_visibles[ligne][colonne] = True
+
+    # Si c'est un zéro, dévoiler les cases autour
+    # Continuer uniquement si c'est un zéro
+    if grille[ligne][colonne] == 0:
+        for l in range(ligne - 1, ligne + 2):
+            for c in range(colonne - 1, colonne + 2):
+                ouvre_case(l, c, clic_direct=False)
+
 # Bouton
 # couleur survol bouton
 def bouton(couleur,couleur_hover,texte):
@@ -84,18 +122,11 @@ def bouton(couleur,couleur_hover,texte):
         couleur_bouton = couleur_hover
     else:
         couleur_bouton = couleur
-
-    # création du bouton
+        
     pygame.draw.rect(screen,couleur_bouton,bouton_rect,border_radius=10)
     texte_bouton_3 = police_texte.render(texte,True,BLANC)
     texte_rect_3 = texte_bouton_3.get_rect(center=bouton_rect.center)
     screen.blit(texte_bouton_3,texte_rect_3)
-
-# Rejouer
-#def rejouer():
-    # il faut rendre global les variables pour pouvoir les reset
-    # global variables
-    
 
 while True:
     for event in pygame.event.get():
@@ -106,8 +137,37 @@ while True:
         if (etat_jeu == "MENU" or etat_jeu == "GAME OVER" or etat_jeu == "WINNER") and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if bouton_rect.collidepoint(event.pos):
-                    etat_jeu = "JEU"       
+                    etat_jeu = "JEU"
+                    temps_depart = pygame.time.get_ticks()     
 
+        elif etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:
+            
+            temps_actuel = pygame.time.get_ticks()
+            
+            if event.button == 1:
+                x, y = event.pos
+
+                if 0 <= x < 400 and 50 <= y < 450:
+                    colonne = x // tuile_taille
+                    ligne = (y - 50) // tuile_taille
+                    ouvre_case(ligne, colonne)
+            if event.button == 3:
+                x,y = event.pos
+                if 0 <= x < 400 and 50 <= y < 450:
+                    colonne = x // tuile_taille
+                    ligne = (y - 50) // tuile_taille
+                    if cases_visibles[ligne][colonne] == False:
+                        if drapeaux[ligne][colonne]==False and nombre_flag > 0:
+                            drapeaux[ligne][colonne] = True
+                            nombre_flag -= 1
+                        elif drapeaux[ligne][colonne]==True:
+                            drapeaux[ligne][colonne] = False
+                            nombre_flag += 1 
+                    elif cases_visibles[ligne][colonne] == True and drapeaux[ligne][colonne]==True:
+                        drapeaux[ligne][colonne] = False
+                        nombre_flag += 1 
+                        
+                    
     # arrière plan
     screen.fill(arriere_plan)
     
@@ -123,6 +183,18 @@ while True:
         
     # JEU
     if etat_jeu == "JEU":
+        
+        # timer (optionnel, non teminé)
+        temps_actuel = pygame.time.get_ticks()
+        
+        # image flag et mine
+        screen.blit(flag,(5,5))
+        screen.blit(mine,(180,5))
+        
+        # nombre de flags
+        compteur_flags = police_compteur.render(f" : {nombre_flag}",True, ROUGE)
+        screen.blit(compteur_flags,(50,10))
+        
         # couche inférieure
         for row in range(tuile_nbe):
             for col in range(tuile_nbe):
@@ -138,15 +210,24 @@ while True:
         # couche supérieure
         for row in range(tuile_nbe):
                 for col in range(tuile_nbe):
-                    if (row + col)%2 == 0:
-                        color = tuile_c1
-                    else:
-                        color = tuile_c2
+                    if not cases_visibles[row][col]:
+                        if (row + col)%2 == 0:
+                            color = tuile_c1
+                        else:
+                            color = tuile_c2
+                        x = col * tuile_taille
+                        y = row * tuile_taille + 50
+                        pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
+                        pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
+                        
+        # couche de drapeaux
+        for row in range(10):
+            for col in range(10):
+                if drapeaux[row][col] == True:
                     x = col * tuile_taille
-                    y = row * tuile_taille + 50
-                    pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
-                    pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
-    
+                    y = row * tuile_taille
+                    screen.blit(flag,(x,y+50))
+        
     # GAME OVER
     if etat_jeu == "GAME OVER":
         
