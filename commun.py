@@ -85,6 +85,16 @@ mine = pygame.transform.scale(mine, (40, 40))
 
 # FONCTIONS
 
+# Est-ce qu'on a gagné?
+def did_you_win():
+    global etat_jeu
+    for row in range(tuile_nbe):
+        for col in range(tuile_nbe):
+            if grille[row][col] != -1 and not cases_visibles[row][col]:
+                return  
+                
+    etat_jeu = "WINNER"
+    
 # Montrer une case
 def ouvre_case(ligne, colonne, clic_direct=True):
     global etat_jeu
@@ -115,7 +125,6 @@ def ouvre_case(ligne, colonne, clic_direct=True):
                 ouvre_case(l, c, clic_direct=False)
 
 # Bouton
-# couleur survol bouton
 def bouton(couleur,couleur_hover,texte):
     souris_pos = pygame.mouse.get_pos()
     if bouton_rect.collidepoint(souris_pos)==True:
@@ -131,13 +140,19 @@ def bouton(couleur,couleur_hover,texte):
 # Rejouer
 def rejouer():
     # il faut rendre global les variables pour pouvoir les reset
-    global grille, cases_visibles, etat_jeu
+    global grille, cases_visibles, drapeaux, nombre_flag, etat_jeu
 
     # Créer une nouvelle grille avec de nouvelles mines
     grille = generer_grille()
 
     # Cacher toutes les cases
     cases_visibles = [[False for col in range(10)] for row in range(10)]
+
+    # Enlever tous les drapeaux
+    drapeaux = [[False for col in range(10)] for row in range(10)]
+
+    # Réinitialiser le compteur de drapeaux
+    nombre_flag = 10
 
     # Revenir à l'écran de jeu
     etat_jeu = "JEU"
@@ -253,7 +268,9 @@ while True:
                     x = col * tuile_taille
                     y = row * tuile_taille
                     screen.blit(flag,(x,y+50))
-
+        # vérification si on a gagné            
+        did_you_win()
+        
     # GAME OVER
     if etat_jeu == "GAME OVER":
         
