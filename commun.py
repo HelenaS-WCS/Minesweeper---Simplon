@@ -77,10 +77,14 @@ explosion = pygame.transform.scale(explosion, (40, 40))
 mine = pygame.image.load('images/mine.png')
 mine = pygame.transform.scale(mine, (40, 40))
 
-# FONCTIONS
+### FONCTIONS
 # Est-ce qu'on a gagné?
 def did_you_win():
+    
+    # rendre global la variable etat_jeu et temps de victoire
     global etat_jeu, temps_victoire
+
+    # Si le toutes les cases non bombes sont découvertes alors on passe en état "WINNING"
     for row in range(tuile_nbe):
         for col in range(tuile_nbe):
             if grille[row][col] != -1 and not cases_visibles[row][col]:
@@ -323,4 +327,3 @@ while True:
         bouton(VERT_BOUTON,VERT_HOVER,"Rejouer")
     
     pygame.display.update()
-    clock.tick(compteur_fps)
