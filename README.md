@@ -15,7 +15,9 @@ Contrôles :
 - Boutons pour démarrer la partie de jeu et pour rejouer
 
 Condition de victoire : révéler toutes les cases sans mines.
+
 Condition de défaite : révéler une case avec minés.
+
 
 Pour créer ce jeu, on s'est réparti avec des tâches définies pour chaque fonctionnalité : 
 
