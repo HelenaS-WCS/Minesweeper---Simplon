@@ -18,10 +18,6 @@ police_titre = pygame.font.SysFont("Arial", 42, bold=True)
 police_texte = pygame.font.SysFont("Arial", 30)
 police_compteur = pygame.font.SysFont("Arial", 30, bold=True)
 
-#FPS
-clock = pygame.time.Clock()
-compteur_fps = 10
-
 # tuiles
 tuile_taille = 40
 tuile_nbe = 10
