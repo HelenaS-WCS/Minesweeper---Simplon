@@ -41,6 +41,6 @@ Pour créer ce jeu, on s'est réparti avec des tâches définies pour chaque fon
 5/ Début et fin du jeu :
 - petite présentation au début (optionnel) : Par exemple : l’objectif du jeu
 - Fin : créer un évènement dans le cas où :
-- le joueur gagne 
+       - le joueur gagne
        - Le joueur perds (quand il clique sur une mine)
        - Proposer au joueur de relancer le jeu
