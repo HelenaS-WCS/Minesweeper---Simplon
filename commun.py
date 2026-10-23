@@ -2,7 +2,7 @@ import pygame
 import sys
 import random
 import os
-from Vinuisaa_matrices import generer_grille
+from matrices import generer_grille
 
 pygame.init()
 
