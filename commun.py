@@ -87,17 +87,18 @@ mine = pygame.transform.scale(mine, (40, 40))
 
 # Est-ce qu'on a gagné?
 def did_you_win():
-    global etat_jeu
+    global etat_jeu, temps_victoire
     for row in range(tuile_nbe):
         for col in range(tuile_nbe):
             if grille[row][col] != -1 and not cases_visibles[row][col]:
                 return  
                 
-    etat_jeu = "WINNER"
+    etat_jeu = "WINNING"
+    temps_victoire = pygame.time.get_ticks()
     
 # Montrer une case
 def ouvre_case(ligne, colonne, clic_direct=True):
-    global etat_jeu
+    global etat_jeu, temps_defaite
 
     # Vérifier que la case est dans la grille
     if ligne < 0 or ligne >= 10 or colonne < 0 or colonne >= 10:
@@ -107,7 +108,8 @@ def ouvre_case(ligne, colonne, clic_direct=True):
     if grille[ligne][colonne] == -1:
         if clic_direct:
             cases_visibles[ligne][colonne] = True
-            etat_jeu = "GAME OVER"
+            etat_jeu = "LOSING"
+            temps_defaite = pygame.time.get_ticks()
         return
     
     # Si la case est déjà visible, arrêter
@@ -210,6 +212,16 @@ while True:
                     elif cases_visibles[ligne][colonne] == True and drapeaux[ligne][colonne]==True:
                         drapeaux[ligne][colonne] = False
                         nombre_flag += 1 
+                        
+    # 1 seconde avant de passer à l'état jeu = "WINNER", 
+    if etat_jeu == "WINNING":
+        if pygame.time.get_ticks() - temps_victoire >= 1000:
+            etat_jeu = "WINNER"
+
+    # 1 seconde avant de passer à l'état jeu = "GAME OVER", 
+    if etat_jeu == "LOSING":
+        if pygame.time.get_ticks() - temps_defaite >= 1000:
+            etat_jeu = "GAME OVER"
                     
     # arrière plan
     screen.fill(arriere_plan)
