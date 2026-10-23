@@ -22,26 +22,25 @@ Condition de défaite : révéler une case avec minés.
 Pour créer ce jeu, on s'est réparti avec des tâches définies pour chaque fonctionnalité : 
 
 1/ Afficher une fenêtre avec une grille de cases
-    - Cases 10 x 10 : bande de 50 pixels en haut pour pouvoir afficher le nombre de balises dispos. 
-    - Couche supérieure 10x10 cases (40 pixels)
-    - Couche inférieure 10x10 cases (40 pixels)
+- Cases 10 x 10 : bande de 50 pixels en haut pour pouvoir afficher le nombre de balises dispos. 
+- Couche supérieure 10x10 cases (40 pixels)
+- Couche inférieure 10x10 cases (40 pixels)
 
 2/ Créer une grille, dans un fichier Modules avec des Fonction
-    - Grille 10x10 avec 10 mines aléatoires + chiffres indiquant le nombre de mines autour de la case
-    - Compteur de mines dans les cases
+- Grille 10x10 avec 10 mines aléatoires + chiffres indiquant le nombre de mines autour de la case
+- Compteur de mines dans les cases
 
 3/ Détecter les clics gauche et droit.
-    - Clic gauche : dévoiler la case , suppression couche supérieure, dévoile couche inférieure
-    Attention : si 0 → dévoile toutes les cases autour et les premières cases numérotées incluses 
-    - Clic droit : placer ou enlever une balise (mine suspectée) + compteur de balise qui diminue
+- Clic gauche : dévoiler la case , suppression couche supérieure, dévoile couche inférieure. Attention : si 0 → dévoile toutes les cases autour et les premières cases numérotées incluses
+- Clic droit : placer ou enlever une balise (mine suspectée) + compteur de balise qui diminue
 
 4/ Dessiner les cases, les mines, les drapeaux et les chiffres. 
-    - Trouver les images
-    - choisir format / couleurs des chiffres 
+- Trouver les images
+- - choisir format / couleurs des chiffres 
 
 5/ Début et fin du jeu :
-    - petite présentation au début (optionnel) : Par exemple : l’objectif du jeu
-    - Fin : créer un évènement dans le cas où : 
-       - le joueur gagne 
+- petite présentation au début (optionnel) : Par exemple : l’objectif du jeu
+- Fin : créer un évènement dans le cas où :
+- le joueur gagne 
        - Le joueur perds (quand il clique sur une mine)
        - Proposer au joueur de relancer le jeu
