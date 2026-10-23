@@ -200,44 +200,69 @@ while True:
                     else:
                         rejouer()       
 
-        elif etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:     # modif if en elif
+        # Si on est en état jeu et on clique gauche sur une case, la case se dévoile
+        elif etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
+
+                # récupération de la position de la souris
                 x, y = event.pos
 
+                # trouver à quelle case de la matrice correspond la position de la souris
                 if 0 <= x < 400 and 50 <= y < 450:
                     colonne = x // tuile_taille
                     ligne = (y - 50) // tuile_taille
+
+                    # dévoiler la case
                     ouvre_case(ligne, colonne)
-                    
-            if event.button == 3:                        #HELENA
+
+            # Si on clique droit sur case, une base doit s'afficher
+            if event.button == 3:
+
+                # on récupère la position de la souris
                 x,y = event.pos
+
+                # on détermine la case correspondante
                 if 0 <= x < 400 and 50 <= y < 450:
                     colonne = x // tuile_taille
                     ligne = (y - 50) // tuile_taille
+
+                    # Si la case est encore caché
                     if cases_visibles[ligne][colonne] == False:
+                        
+                        # Et si le nombre de drapeaux disponibles est supérieur à 0
                         if drapeaux[ligne][colonne]==False and nombre_flag > 0:
+                            
+                            # On place une case
                             drapeaux[ligne][colonne] = True
                             nombre_flag -= 1
+                            
+                        # Si je reclique droit sur un drapeau, je le recupère    
                         elif drapeaux[ligne][colonne]==True:
                             drapeaux[ligne][colonne] = False
                             nombre_flag += 1 
+
+                    # Si une case est dévoilée avec un drapeau, le ou les drapeaux sont rappatriés (peut-être à supprimer)
                     elif cases_visibles[ligne][colonne] == True and drapeaux[ligne][colonne]==True:
                         drapeaux[ligne][colonne] = False
                         nombre_flag += 1
-
+                        
+    # Quand on gagne, la grille s'affiche pendant une seconde avant de passer à l'état "WINNER"
     if etat_jeu == "WINNING":
         if pygame.time.get_ticks() - temps_victoire >= 1000:
             etat_jeu = "WINNER"
 
+    # Quand on perds, la grille s'affiche pendant une seconde avant de passer à l'état "GAME OVER"
     if etat_jeu == "LOSING":
         if pygame.time.get_ticks() - temps_defaite >= 1000:
             etat_jeu = "GAME OVER"
                     
     # arrière plan
     screen.fill(arriere_plan)
-    
+
+    ### AFFICHAGE
     # MENU
     if etat_jeu == "MENU":
+        
         # Titre
         titre_principal = police_titre.render("MINESWEEPER",True, NOIR)
         titre_rect = titre_principal.get_rect(center = (400//2,450//2-80))
@@ -249,17 +274,15 @@ while True:
     # JEU
     if etat_jeu == "JEU" or etat_jeu == "WINNING" or etat_jeu == "LOSING":
         
-        temps_actuel = pygame.time.get_ticks()
-        
-        # image flag et mine
+        # affichage image flag et mine
         screen.blit(flag,(5,5))
         screen.blit(mine,(180,5))
         
-        # nombre de flags
+        # compteur nombre de flags
         compteur_flags = police_compteur.render(f" : {nombre_flag}",True, ROUGE)
         screen.blit(compteur_flags,(50,10))
         
-        # couche inférieure
+        # couche inférieure : création d'un damier
         for row in range(tuile_nbe):
             for col in range(tuile_nbe):
                 if (row + col)%2 == 0:
@@ -268,10 +291,12 @@ while True:
                     color = sous_tuile_c2
                 x = col * tuile_taille
                 y = row * tuile_taille + 50
+
+                # Affichage de la grille
                 pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
                 pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
                 
-        # couche supérieure
+        # couche supérieure : création d'un second damier
         for row in range(tuile_nbe):
                 for col in range(tuile_nbe):
                     x = col * tuile_taille
@@ -282,9 +307,12 @@ while True:
                             color = tuile_c1
                         else:
                             color = tuile_c2
+
+                        # affichage de la grille
                         pygame.draw.rect(screen,color,(x,y,tuile_taille,tuile_taille))
                         pygame.draw.rect(screen,border_c,(x,y,tuile_taille,tuile_taille),1)
 
+                    # Affichage des numéros
                     elif grille[row][col] > 0:
                         texte_case = police_texte.render(str(grille[row][col]), True, NOIR)
                         texte_rect = texte_case.get_rect(
@@ -292,10 +320,11 @@ while True:
                             )
                         screen.blit(texte_case, texte_rect)
                         
+                    # affichage de l'explosion    
                     elif grille[row][col] == -1:
                         screen.blit(explosion, (x,y))
                         
-        # couche de drapeaux                                #HELENA
+        # Affichage des drapeaux
         for row in range(10):
             for col in range(10):
                 if drapeaux[row][col] == True:
@@ -314,6 +343,7 @@ while True:
         
         # Arrière plan
         screen.fill(ROUGE_FOND)
+        
         # Titre
         titre_go = police_titre.render("GAME OVER!",True, ROUGE)
         titre_go_rect = titre_go.get_rect(center = (400//2,450//2-80))
@@ -328,6 +358,7 @@ while True:
         
         # Arrière plan
         screen.fill(JAUNE_FOND)
+        
         # Titre
         titre_go = police_titre.render("WINNER WINNER",True, JAUNE)
         titre_go_rect = titre_go.get_rect(center = (400//2,450//2-80))
@@ -338,6 +369,7 @@ while True:
 
         # bouton
         bouton(VERT_BOUTON,VERT_HOVER,"Rejouer")
-    
+
+    # Mise à jour de l'affichage
     pygame.display.update()
-    clock.tick(compteur_fps)
+
