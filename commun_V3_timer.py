@@ -1,12 +1,11 @@
 import pygame
 import sys
-import random
-import os
 from matrices import generer_grille
 
+# initiation du jeu
 pygame.init()
 
-# matrice test
+# matrice de départ
 grille = generer_grille()
 
 # fenêtre de jeu
@@ -16,23 +15,19 @@ screen = pygame.display.set_mode((400,450))
 pygame.display.set_caption("Minesweeper (mais en mieux ;) )")
 
 # POLICES
-# Fenêtre de départ
 police_titre = pygame.font.SysFont("Arial", 42, bold=True)
 police_texte = pygame.font.SysFont("Arial", 30)
 police_compteur = pygame.font.SysFont("Arial", 30, bold=True)
 
-#FPS
-clock = pygame.time.Clock()
-compteur_fps = 10
-
-# tuiles
+# caractéristiques tuiles
 tuile_taille = 40
 tuile_nbe = 10
 
 # Cases cachées au début
 cases_visibles = [[False for col in range(10)] for row in range(10)]
 
-# nombre de balises restantes                                #HELENA
+# BALISES
+# nombre de balises restantes                         
 nombre_flag = 10
 # matrice drapeau
 drapeaux = [[False for col in range(10)] for row in range(10)]
@@ -58,18 +53,18 @@ JAUNE_FOND = (145,100,10)
 VERT_BOUTON = (125, 120, 10)
 VERT_HOVER = (200,200, 15)
 
-# 1ere couche
+# Grille visible
 arriere_plan = (130,220,240)
 tuile_c1 = (110,150,160)
 tuile_c2 = (140,190,200)
 border_c = (85,115,140)
 
-# 2eme couche
+# Grille invisible
 sous_tuile_c1 = (220,250,240)
 sous_tuile_c2 = (210,240,230)
 
 
-# Définition du bouton "Démarrer" (x, y, largeur, hauteur)
+# Définition du bouton "Démarrer" et "Rejouer"
 bouton_rect = pygame.rect.Rect(400 // 2 - 125, 450 // 2 + 50, 250, 60)
 
 # État initial du jeu
@@ -87,12 +82,19 @@ mine = pygame.transform.scale(mine, (40, 40))
 
 # Est-ce qu'on a gagné?
 def did_you_win():
+    
+    # rendre les variables globales
     global etat_jeu, temps_victoire
+
+    # Si toutes les cases sans bombes sont découvertes --> on bascule en etat_jeu en "WINNING"
     for row in range(tuile_nbe):
         for col in range(tuile_nbe):
             if grille[row][col] != -1 and not cases_visibles[row][col]:
-                return  
-    etat_jeu = "WINNING"   
+                return 
+                
+    etat_jeu = "WINNING"
+    
+    # Création de variable délai
     temps_victoire = pygame.time.get_ticks()
     
 # Montrer une case
@@ -128,23 +130,29 @@ def ouvre_case(ligne, colonne, clic_direct=True):
 # rappatrier drapeaux
 def rappat_drapeaux():
 
-    global nombre_flag
-    global drapeaux
-    
+    # Rendre les variables globales
+    global nombre_flag , drapeaux
+
+    # Si un drapeau se trouve sur une case découverte, il ne s'affiche plus et le compteur augmente de 1
     for ligne in range(10):
         for colonne in range(10):
             if drapeaux[ligne][colonne]==True and cases_visibles[ligne][colonne] == True:
                 drapeaux[ligne][colonne]=False
                 nombre_flag += 1
                 
-# Bouton
+# création de bouton démarrer et rejouer
 def bouton(couleur,couleur_hover,texte):
+
+    # récupération position souris
     souris_pos = pygame.mouse.get_pos()
+
+    # si la souris passe au dessus du bouton, la couleur du bouton change
     if bouton_rect.collidepoint(souris_pos)==True:
         couleur_bouton = couleur_hover
     else:
         couleur_bouton = couleur
-        
+
+    # affichage du bouton
     pygame.draw.rect(screen,couleur_bouton,bouton_rect,border_radius=10)
     texte_bouton_3 = police_texte.render(texte,True,BLANC)
     texte_rect_3 = texte_bouton_3.get_rect(center=bouton_rect.center)
@@ -170,22 +178,27 @@ def rejouer():
     # Revenir à l'écran de jeu
     etat_jeu = "JEU"
     
-
+# Tant que la condition est vraie, la boucle de jeu se lance
 while True:
     for event in pygame.event.get():
+
+        # Boucle pour pouvoir quitter le jeu en cliquant sur "x"
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit() 
-            
+
+        # Quand on clique sur le bouton "démarrer" ou "rejouer" le jeu se (re)lance
         if (etat_jeu == "MENU" or etat_jeu == "GAME OVER" or etat_jeu == "WINNER") and event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 if bouton_rect.collidepoint(event.pos):
+                    
+                    # Démarrage du jeu
                     if etat_jeu == "MENU":
                         etat_jeu = "JEU"
-                    else:
-                        rejouer()
 
-                    temps_depart = pygame.time.get_ticks()       
+                    # Réinitialisation du jeu
+                    else:
+                        rejouer()       
 
         elif etat_jeu == "JEU" and event.type == pygame.MOUSEBUTTONDOWN:     # modif if en elif
             if event.button == 1:
