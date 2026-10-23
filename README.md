@@ -1,5 +1,5 @@
 # Minesweeper---Simplon
-Pyhton - Partie 2 - jeu video
+Python - Partie 2 - jeu video
 
 Le but du jeu (Minesweeper) : Trouver les cases cachées sans mines et éviter les cases cachées contenant des mines. 
 
