@@ -6,9 +6,6 @@ from matrices import generer_grille
 
 pygame.init()
 
-# matrice test
-grille = generer_grille()
-
 # fenêtre de jeu
 screen = pygame.display.set_mode((400,450))
 
@@ -32,12 +29,13 @@ tuile_nbe = 10
 # Cases cachées au début
 cases_visibles = [[False for col in range(10)] for row in range(10)]
 
+## BALISES
 # nombre de balises restantes                                #HELENA
 nombre_flag = 10
 # matrice drapeau
 drapeaux = [[False for col in range(10)] for row in range(10)]
 
-# COULEURS
+## COULEURS
 # Fenêtre de départ
 BLANC = (255, 255, 255)
 NOIR = (40, 40, 40)
@@ -75,7 +73,7 @@ bouton_rect = pygame.rect.Rect(400 // 2 - 125, 450 // 2 + 50, 250, 60)
 # État initial du jeu
 etat_jeu = "MENU"
 
-# Images
+### IMAGES
 flag = pygame.image.load('images/flag.png')
 flag = pygame.transform.scale(flag, (40, 40))
 explosion = pygame.image.load('images/explosion.png')
@@ -84,7 +82,6 @@ mine = pygame.image.load('images/mine.png')
 mine = pygame.transform.scale(mine, (40, 40))
 
 # FONCTIONS
-
 # Est-ce qu'on a gagné?
 def did_you_win():
     global etat_jeu, temps_victoire
