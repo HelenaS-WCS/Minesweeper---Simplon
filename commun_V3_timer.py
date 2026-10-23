@@ -124,7 +124,19 @@ def ouvre_case(ligne, colonne, clic_direct=True):
         for l in range(ligne - 1, ligne + 2):
             for c in range(colonne - 1, colonne + 2):
                 ouvre_case(l, c, clic_direct=False)
+                
+# rappatrier drapeaux
+def rappat_drapeaux():
 
+    global nombre_flag
+    global drapeaux
+    
+    for ligne in range(10):
+        for colonne in range(10):
+            if drapeaux[ligne][colonne]==True and cases_visibles[ligne][colonne] == True:
+                drapeaux[ligne][colonne]=False
+                nombre_flag += 1
+                
 # Bouton
 def bouton(couleur,couleur_hover,texte):
     souris_pos = pygame.mouse.get_pos()
@@ -277,6 +289,10 @@ while True:
                     x = col * tuile_taille
                     y = row * tuile_taille
                     screen.blit(flag,(x,y+50))
+                    
+        # rappatriement drapeaux
+        rappat_drapeaux()
+        
         # vérification si on a gagné            
         did_you_win()
         
