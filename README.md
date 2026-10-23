@@ -19,6 +19,7 @@ Condition de victoire : révéler toutes les cases sans mines.
 Condition de défaite : révéler une case avec minés.
 
 
+
 Pour créer ce jeu, on s'est réparti avec des tâches définies pour chaque fonctionnalité : 
 
 1/ Afficher une fenêtre avec une grille de cases
