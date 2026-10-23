@@ -240,11 +240,6 @@ while True:
                         elif drapeaux[ligne][colonne]==True:
                             drapeaux[ligne][colonne] = False
                             nombre_flag += 1 
-
-                    # Si une case est dévoilée avec un drapeau, le ou les drapeaux sont rappatriés (peut-être à supprimer)
-                    elif cases_visibles[ligne][colonne] == True and drapeaux[ligne][colonne]==True:
-                        drapeaux[ligne][colonne] = False
-                        nombre_flag += 1
                         
     # Quand on gagne, la grille s'affiche pendant une seconde avant de passer à l'état "WINNER"
     if etat_jeu == "WINNING":
