@@ -234,7 +234,7 @@ while True:
         bouton(BLEU_BOUTON,BLEU_HOVER,"Démarrer")
         
     # JEU
-    if etat_jeu == "JEU":
+    if etat_jeu == "JEU" or etat_jeu == "WINNING" or etat_jeu == "LOSING":
         
         temps_actuel = pygame.time.get_ticks()
         
