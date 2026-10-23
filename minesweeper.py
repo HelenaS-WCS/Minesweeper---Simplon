@@ -85,7 +85,11 @@ def did_you_win():
     
     # rendre les variables globales
     global etat_jeu, temps_victoire
-
+    
+    # Si le jeu n'est plus en cours, on arrête immédiatement
+    if etat_jeu != "JEU":
+        return
+        
     # Si toutes les cases sans bombes sont découvertes --> on bascule en etat_jeu en "WINNING"
     for row in range(tuile_nbe):
         for col in range(tuile_nbe):
