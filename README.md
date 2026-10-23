@@ -36,11 +36,8 @@ Pour créer ce jeu, on s'est réparti avec des tâches définies pour chaque fon
 
 4/ Dessiner les cases, les mines, les drapeaux et les chiffres. 
 - Trouver les images
-- - choisir format / couleurs des chiffres 
+- choisir format / couleurs des chiffres 
 
 5/ Début et fin du jeu :
 - petite présentation au début (optionnel) : Par exemple : l’objectif du jeu
-- Fin : créer un évènement dans le cas où :
-       - le joueur gagne
-       - Le joueur perds (quand il clique sur une mine)
-       - Proposer au joueur de relancer le jeu
+- Fin : créer un évènement dans le cas où : le joueur gagne, le joueur perds (quand il clique sur une mine), ou proposer au joueur de relancer le jeu.
